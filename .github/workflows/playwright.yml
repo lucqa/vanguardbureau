@@ -4,6 +4,8 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  schedule:
+    - cron: "0 * * * *"
 jobs:
   retrieve-and-post:
     timeout-minutes: 60
@@ -23,7 +25,7 @@ jobs:
     - name: Installing dependencies
       run: npm ci
     - name: Installing Playwright
-      run: npx playwright install
+      run: npx playwright install chromium
     - name: Running Playwright
       run: npx playwright test
     - uses: actions/upload-artifact@v4
