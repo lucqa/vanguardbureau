@@ -1,0 +1,34 @@
+name: Ghosts of The Surface
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+jobs:
+  retrieve-and-post:
+    timeout-minutes: 60
+    runs-on: windows-latest
+    env:
+        APP_ID: ${{ secrets.APP_ID }}
+        APP_KEY: ${{ secrets.APP_KEY }}
+        BLUESKY_CREDENTIAL_PASSWORD: ${{ secrets.BLUESKY_CREDENTIAL_PASSWORD }}
+        BLUESKY_CREDENTIAL_USER: ${{ secrets.BLUESKY_CREDENTIAL_USER }}
+        BLUESKY_SERVICE: ${{ secrets.BLUESKY_SERVICE }}
+        FFGLOBALENABLED: ${{ secrets.FFGLOBALENABLED }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    - name: Installing dependencies
+      run: npm ci
+    - name: Installing Playwright
+      run: npx playwright install
+    - name: Running Playwright
+      run: npx playwright test
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
