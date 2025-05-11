@@ -2,7 +2,7 @@ import { test } from '@playwright/test'
 import { RetrievePlayerCount } from '../support/getPlayerCount'
 import { PostOnBluesky } from '../support/postOnBluesky'
 
-test('Placeholder name', async ({}) => {
+test('Fetch data from Steam API and post through Bluesky ATP Agent', async ({}) => {
 
     // Call resource
     const retrievePlayerCount: RetrievePlayerCount = new RetrievePlayerCount

@@ -1,5 +1,5 @@
-import { expect, request } from '@playwright/test'
-import { AtpAgent, AtpSessionEvent, AtpSessionData } from '@atproto/api'
+import { expect } from '@playwright/test'
+import { AtpAgent } from '@atproto/api'
 
 export class PostOnBluesky {
 
