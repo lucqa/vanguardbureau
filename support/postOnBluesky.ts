@@ -3,49 +3,113 @@ import { AtpAgent } from '@atproto/api'
 
 export class PostOnBluesky {
 
-    async post(playerCount: string) {
+    async post(playerCount: any) {
 
-        // String to be posted/logged
-        const postText = 'Destiny 2 has currently ' + playerCount + ' players online on PC (Steam). #Destiny2'
+        let postText:any
 
-        // Starting session
-        const agent = new AtpAgent({ service: process.env.BLUESKY_SERVICE as string })
+        // Verify Player Count = 0
+        if ((playerCount == 0) || (playerCount == '0')) {
 
-        // Logging In
-        const login = await agent.login({
-            identifier: process.env.BLUESKY_CREDENTIAL_USER as string,
-            password: process.env.BLUESKY_CREDENTIAL_PASSWORD as string
-        })
+            // String to be posted/logged
+            postText = 'Unable to fetch Destiny 2 player population.\n\nPlease check if maintenance is in progress at @bungieserverstatus.bungie.net. #Destiny2'
 
-        // FF Control
-        const FFGlobalEnabled = process.env.FFGlobalEnabled as string
+            // Feature Flag Control
+            if (process.env.FFGlobalEnabled == 'true') {
 
-        // FF condition
-        if (FFGlobalEnabled == "true") {
-            // Post
-            const post = await agent.post({
-                text: postText,
-                langs: ['en'],
-                facets: [
-                    {
-                        index: {
-                            byteStart: 61,
-                            byteEnd: 71
+                // Starting session
+                const agent = new AtpAgent({ service: process.env.BLUESKY_SERVICE as string })
+
+                // Logging In
+                const login = await agent.login({
+                    identifier: process.env.BLUESKY_CREDENTIAL_USER as string,
+                    password: process.env.BLUESKY_CREDENTIAL_PASSWORD as string
+                })
+
+                // Post
+                const post = await agent.post({
+                    text: postText,
+                    langs: ['en'],
+                    facets: [
+                        {
+                            index: {
+                                byteStart: postText.length - 9,
+                                byteEnd: postText.length
+                            },
+                            features: [{
+                                $type: 'app.bsky.richtext.facet#tag',
+                                tag: 'Destiny2'
+                            }]
                         },
-                        features: [{
-                            $type: 'app.bsky.richtext.facet#tag',
-                            tag: 'Destiny2'
-                        }]
-                    }
-                ]
-            })
-            expect(post.uri).toBeDefined()
-            expect(post.cid).toBeDefined()
+                        {
+                            index: {
+                                byteStart: postText.length - 41,
+                                byteEnd: postText.length - 11
+                            },
+                            features: [{
+                                $type: 'app.bsky.richtext.facet#mention',
+                                did: 'did:plc:pekfvt52gjy5qunf3jcdvze4'
+                            }]
+                        }
+                    ]
+                })
+
+                // Assertion
+                expect(post.uri).toBeDefined()
+                expect(post.cid).toBeDefined()
+            }
+
+            else {
+                console.log('FF disabled. No post was created. String:\n' + postText)
+            }
+
         }
+
+        // if !=0
         else {
-            console.log('FF is disabled.')
+
+            // String to be posted/logged
+            postText = 'Destiny 2 has currently ' + playerCount + ' players online on PC (Steam). #Destiny2'
+
+            // Feature Flag Control
+            if (process.env.FFGlobalEnabled == 'true') {
+
+                // Starting session
+                const agent = new AtpAgent({ service: process.env.BLUESKY_SERVICE as string })
+
+                // Logging In
+                const login = await agent.login({
+                    identifier: process.env.BLUESKY_CREDENTIAL_USER as string,
+                    password: process.env.BLUESKY_CREDENTIAL_PASSWORD as string
+                })
+
+                // Post
+                const post = await agent.post({
+                    text: postText,
+                    langs: ['en'],
+                    facets: [
+                        {
+                            index: {
+                                byteStart: postText.length - 9,
+                                byteEnd: postText.length + 2
+                            },
+                            features: [{
+                                $type: 'app.bsky.richtext.facet#tag',
+                                tag: 'Destiny2'
+                            }]
+                        }
+                    ]
+                })
+
+                // Assertion
+                expect(post.uri).toBeDefined()
+                expect(post.cid).toBeDefined()
+            }
+            
+            else {
+                console.log('FF disabled. No post was created. String:\n' + postText)
+            }
         }
-        console.log(postText)
+
     }
 
 }
