@@ -5,10 +5,10 @@ on:
   pull_request:
     branches: [ main, master ]
   schedule:
-    - cron: "0 * * * *"
+    - cron: "00 * * * *"
 jobs:
   retrieve-and-post:
-    timeout-minutes: 60
+    timeout-minutes: 5
     runs-on: windows-latest
     env:
         APP_ID: ${{ secrets.APP_ID }}

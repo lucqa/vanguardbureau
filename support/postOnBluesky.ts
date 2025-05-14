@@ -29,8 +29,8 @@ export class PostOnBluesky {
                 facets: [
                     {
                         index: {
-                            byteStart: 61,
-                            byteEnd: 71
+                                byteStart: postText.length - 9,
+                                byteEnd: postText.length
                         },
                         features: [{
                             $type: 'app.bsky.richtext.facet#tag',
