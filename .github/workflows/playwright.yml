@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ main, master ]
   schedule:
-    - cron: "0 */2 * * *"
+    - cron: "0 * * * *"
 jobs:
   retrieve-and-post:
     timeout-minutes: 5
